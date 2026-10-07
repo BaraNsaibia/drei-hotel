@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ room.name }} — Drei Hotel{% endblock %}
+
+{% block body %}
+    <!-- Breadcrumb & Top Bar -->
+    <div class="py-3 border-bottom bg-white">
+        <div class="container d-flex justify-content-between align-items-center">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_rooms') }}">Chambres</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ room.name }}</li>
+                </ol>
+            </nav>
+            <span class="badge bg-secondary-subtle text-secondary">{{ room.typeName }}</span>
+        </div>
+    </div>
+
+    <div class="container section-padding">
+        <div class="row g-5">
+            <!-- Main Content: Images and Details -->
+            <div class="col-lg-8">
+                <!-- Large Image -->
+                <div class="rounded-4 overflow-hidden mb-4 shadow-sm position-relative" style="max-height: 480px;">
+                    {% if room.type == 'standard' %}
+                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                    {% elseif room.type == 'deluxe' %}
+                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                    {% elseif room.type == 'suite' %}
+                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                    {% endif %}
+                </div>
+
+                <!-- Room Title & Key Specs -->
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                    <div>
+                        <h1 class="h2 brand-font mb-1">{{ room.name }}</h1>
+                        <span class="text-muted"><i class="fa-solid fa-location-dot text-primary me-1"></i> Étage supérieur &bull; Drei Hotel</span>
+                    </div>
+                    <div class="text-lg-end">
+                        <div class="h3 brand-font text-primary mb-0">{{ room.pricePerNight|number_format(2, ',', ' ') }} €</div>
+                        <small class="text-muted">par nuit / taxes incluses</small>
+                    </div>
+                </div>
+
+                <!-- Key Features Row -->
+                <div class="row g-3 py-3 px-2 bg-white rounded-4 border shadow-sm mb-4 text-center">
+                    <div class="col-3 border-end">
+                        <i class="fa-solid fa-users text-primary fs-4 mb-1"></i>
+                        <div class="small fw-bold">{{ room.capacity }} Personne{{ room.capacity > 1 ? 's' : '' }}</div>
+                        <span class="text-muted small" style="font-size: 0.75rem;">Capacité</span>
+                    </div>
+                    <div class="col-3 border-end">
+                        <i class="fa-solid fa-vector-square text-primary fs-4 mb-1"></i>
+                        <div class="small fw-bold">{{ room.surface ? room.surface ~ ' m²' : '28 m²' }}</div>
+                        <span class="text-muted small" style="font-size: 0.75rem;">Superficie</span>
+                    </div>
+                    <div class="col-3 border-end">
+                        <i class="fa-solid fa-bed text-primary fs-4 mb-1"></i>
+                        <div class="small fw-bold">{{ room.bedType ?: 'Lit double Queen' }}</div>
+                        <span class="text-muted small" style="font-size: 0.75rem;">Literie</span>
+                    </div>
+                    <div class="col-3">
+                        <i class="fa-solid fa-circle-check text-success fs-4 mb-1"></i>
+                        <div class="small fw-bold text-success">{{ room.statusLabel }}</div>
+                        <span class="text-muted small" style="font-size: 0.75rem;">Disponibilité</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+                    <h4 class="h5 brand-font mb-3">Description de la chambre</h4>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        {{ room.description|nl2br }}
+                    </p>
+                </div>
+
+                <!-- Amenities -->
+                <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+                    <h4 class="h5 brand-font mb-3">Équipements & Prestations incluses</h4>
+                    <div class="row g-3">
+                        {% for amenity in room.amenities %}
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-check-circle text-primary"></i>
+                                    <span>{{ amenity }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Payment Reminder Box -->
+                <div class="payment-onsite-banner">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <div>
+                        <h5 class="fw-bold mb-1">Paiement sur place garanti</h5>
+                        <p class="small text-muted mb-0">
+                            Aucune carte bancaire n'est débitée en ligne. Le montant total de votre séjour sera réglé directement à la réception de l'hôtel lors de votre enregistrement.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Sidebar Card -->
+            <div class="col-lg-4">
+                <div class="bg-white p-4 rounded-4 border shadow-md position-sticky" style="top: 100px;" id="room-price-per-night" data-price="{{ room.pricePerNight }}">
+                    <h4 class="h5 brand-font mb-3">Réserver cette chambre</h4>
+                    
+                    <div class="p-3 rounded-3 mb-3" style="background-color: var(--color-secondary-light);">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted small">Tarif par nuit</span>
+                            <span class="fw-bold">{{ room.pricePerNight|number_format(2, ',', ' ') }} €</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">Mode de règlement</span>
+                            <span class="badge bg-success-subtle text-success">Sur place</span>
+                        </div>
+                    </div>
+
+                    <form action="{{ path('app_reservation_new', {'id': room.id}) }}" method="GET">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold"><i class="fa-regular fa-calendar-days text-primary me-1"></i> Date d'arrivée</label>
+                            <input type="date" name="check_in" id="reservation_checkIn" class="form-control" min="{{ "now"|date("Y-m-d") }}" value="{{ "now"|date("Y-m-d") }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold"><i class="fa-regular fa-calendar-check text-primary me-1"></i> Date de départ</label>
+                            <input type="date" name="check_out" id="reservation_checkOut" class="form-control" min="{{ "+1 day"|date("Y-m-d") }}" value="{{ "+1 day"|date("Y-m-d") }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold"><i class="fa-solid fa-users text-primary me-1"></i> Nombre de personnes</label>
+                            <select name="guests" class="form-select">
+                                {% for i in 1..room.capacity %}
+                                    <option value="{{ i }}" {{ i == 2 ? 'selected' : '' }}>{{ i }} personne{{ i > 1 ? 's' : '' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Live Price Estimation -->
+                        <div class="border-top border-bottom py-3 my-3">
+                            <div class="d-flex justify-content-between text-muted small mb-1">
+                                <span>Durée du séjour :</span>
+                                <strong id="calculated-nights-display">1 nuit</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">Estimation totale :</span>
+                                <span class="h4 brand-font text-primary mb-0" id="calculated-price-display">{{ room.pricePerNight|number_format(2, ',', ' ') }} €</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-drei-primary w-100 py-3 mb-2">
+                            <i class="fa-solid fa-calendar-check me-2"></i> Continuer la réservation
+                        </button>
+                    </form>
+
+                    <p class="text-center text-muted small mb-0 mt-3" style="font-size: 0.8rem;">
+                        <i class="fa-solid fa-lock text-success me-1"></i> Réservation immédiate sans paiement requis en ligne.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

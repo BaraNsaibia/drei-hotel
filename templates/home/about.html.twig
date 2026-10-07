@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos — Drei Hotel{% endblock %}
+
+{% block body %}
+    <!-- Page Header -->
+    <div class="py-5" style="background: linear-gradient(rgba(38, 50, 56, 0.6), rgba(49, 90, 114, 0.7)), url('https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat; color: white;">
+        <div class="container text-center py-4">
+            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2">NOTRE HISTOIRE</span>
+            <h1 class="text-white brand-font display-5 mb-2">À propos de Drei Hotel</h1>
+            <p class="text-light lead mx-auto" style="max-width: 600px;">Une vision moderne de l'hospitalité alliant élégance, simplicité et accueil chaleureux.</p>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container section-padding">
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <span class="section-subtitle">Hospitalité & Charme</span>
+                <h2 class="section-title mb-3">L'excellence au service de votre bien-être</h2>
+                <p class="text-muted mb-3">
+                    Fondé avec l'ambition d'offrir une expérience de villégiature haut de gamme et conviviale, <strong>Drei Hotel</strong> se distingue par son atmosphère apaisante aux tons beiges et bleus et son design contemporain.
+                </p>
+                <p class="text-muted mb-4">
+                    Notre équipe passionnée veille 24h/24 à faire de chaque séjour un moment privilégié. Que vous soyez en voyage professionnel ou en escapade touristique, nous mettons tout en œuvre pour répondre à vos attentes avec discrétion et professionnalisme.
+                </p>
+                <div class="d-flex gap-4">
+                    <div class="border-start border-4 border-warning ps-3">
+                        <div class="h3 brand-font text-primary mb-0">100%</div>
+                        <small class="text-muted">Paiement à l'arrivée sur place</small>
+                    </div>
+                    <div class="border-start border-4 border-warning ps-3">
+                        <div class="h3 brand-font text-primary mb-0">24/7</div>
+                        <small class="text-muted">Service & Réception continue</small>
+                    </div>
+                    <div class="border-start border-4 border-warning ps-3">
+                        <div class="h3 brand-font text-primary mb-0">4.9/5</div>
+                        <small class="text-muted">Note de satisfaction clients</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80" alt="Drei Hotel Interior" class="img-fluid rounded-4 shadow-md">
+            </div>
+        </div>
+    </div>
+{% endblock %}

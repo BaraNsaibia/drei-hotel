@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Services — Drei Hotel{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <div class="py-5" style="background: linear-gradient(rgba(38, 50, 56, 0.6), rgba(49, 90, 114, 0.7)), url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat; color: white;">
+        <div class="container text-center py-4">
+            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2">PRESTATIONS HÔTELIÈRES</span>
+            <h1 class="text-white brand-font display-5 mb-2">Nos Services & Équipements</h1>
+            <p class="text-light lead mx-auto" style="max-width: 600px;">Découvrez toutes les commodités pensées pour sublimer votre séjour.</p>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="container section-padding">
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-wifi"></i></div>
+                    <h4 class="h5 mb-2">Wi-Fi Fibre Optique</h4>
+                    <p class="text-muted small">Connexion Internet haut débit illimitée dans les chambres, halls, terrasses et espaces de travail.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-mug-saucer"></i></div>
+                    <h4 class="h5 mb-2">Petit-Déjeuner Buffet</h4>
+                    <p class="text-muted small">Buffet copieux servi de 06h30 à 10h30 : produits frais, jus pressés, pains artisanaux et mets chauds.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-square-parking"></i></div>
+                    <h4 class="h5 mb-2">Parking Privé Gardé</h4>
+                    <p class="text-muted small">Stationnement intérieur sécurisé avec surveillance vidéo 24h/24 réservé exclusivement à nos clients.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-bell-concierge"></i></div>
+                    <h4 class="h5 mb-2">Conciergerie & Réception 24/7</h4>
+                    <p class="text-muted small">Assistance personnalisée : réservations d'excursions, navettes aéroport, bagagerie et conseils locaux.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-snowflake"></i></div>
+                    <h4 class="h5 mb-2">Climatisation & Chauffage</h4>
+                    <p class="text-muted small">Système de régulation thermique individuel silencieux pour une température idéale en toute saison.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="service-box p-4">
+                    <div class="service-icon-circle"><i class="fa-solid fa-utensils"></i></div>
+                    <h4 class="h5 mb-2">Room Service</h4>
+                    <p class="text-muted small">Une carte raffinée de collations, plats du jour et boissons fraîches livrés dans votre chambre.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ path('app_rooms') }}" class="btn btn-drei-primary btn-lg">
+                <i class="fa-solid fa-calendar-check me-2"></i> Choisir une chambre
+            </a>
+        </div>
+    </div>
+{% endblock %}

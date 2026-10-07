@@ -1,0 +1,65 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block page_title %}Clients & Utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="bg-white rounded-4 border shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h5 class="brand-font mb-0">Base de Données Clients</h5>
+                <span class="text-muted small">Historique et comptes enregistrés sur la plateforme</span>
+            </div>
+            <span class="badge bg-light text-dark border">{{ users|length }} compte(s)</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle table-hover mb-0">
+                <thead class="table-light small text-uppercase">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom & Prénom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                        <th>Inscrit le</th>
+                        <th>Réservations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td><span class="text-muted">#{{ u.id }}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-secondary-subtle text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold small" style="width: 34px; height: 34px;">
+                                        {{ u.firstName|first|upper }}{{ u.lastName|first|upper }}
+                                    </div>
+                                    <span class="fw-bold">{{ u.fullName }}</span>
+                                </div>
+                            </td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.phone ?: '—' }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in u.roles %}
+                                    <span class="badge bg-warning text-dark"><i class="fa-solid fa-shield-halved me-1"></i> Admin</span>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border">Client</span>
+                                {% endif %}
+                            </td>
+                            <td><small class="text-muted">{{ u.createdAt|date('d/m/Y') }}</small></td>
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary fw-bold">
+                                    {{ u.reservations|length }} réservation(s)
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">Aucun client enregistré.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

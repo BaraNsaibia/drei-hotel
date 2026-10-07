@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Chambres & Suites — Drei Hotel{% endblock %}
+
+{% block body %}
+    <!-- Page Header -->
+    <div class="py-5" style="background: linear-gradient(rgba(38, 50, 56, 0.65), rgba(49, 90, 114, 0.75)), url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat; color: white;">
+        <div class="container text-center py-4">
+            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2">SÉLECTION BOUTIQUE HOTEL</span>
+            <h1 class="text-white brand-font display-5 mb-2">Nos Chambres & Suites</h1>
+            <p class="text-light lead mx-auto" style="max-width: 600px;">Découvrez nos hébergements conçus pour un séjour d'exception.</p>
+        </div>
+    </div>
+
+    <div class="container section-padding">
+        <!-- Filter Card -->
+        <div class="bg-white p-4 rounded-4 border shadow-sm mb-5">
+            <form method="GET" action="{{ path('app_rooms') }}" class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="fa-solid fa-bed text-primary me-1"></i> Catégorie de chambre</label>
+                    <select name="type" class="form-select">
+                        <option value="">Toutes les catégories</option>
+                        <option value="standard" {{ selected_type == 'standard' ? 'selected' : '' }}>Chambre Standard</option>
+                        <option value="deluxe" {{ selected_type == 'deluxe' ? 'selected' : '' }}>Chambre Deluxe</option>
+                        <option value="suite" {{ selected_type == 'suite' ? 'selected' : '' }}>Suite Drei</option>
+                        <option value="family" {{ selected_type == 'family' ? 'selected' : '' }}>Chambre Familiale</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="fa-solid fa-user-group text-primary me-1"></i> Capacité min.</label>
+                    <select name="capacity" class="form-select">
+                        <option value="">Indifférent</option>
+                        <option value="1" {{ selected_capacity == 1 ? 'selected' : '' }}>1 Personne</option>
+                        <option value="2" {{ selected_capacity == 2 ? 'selected' : '' }}>2 Personnes</option>
+                        <option value="3" {{ selected_capacity == 3 ? 'selected' : '' }}>3 Personnes</option>
+                        <option value="4" {{ selected_capacity == 4 ? 'selected' : '' }}>4 Personnes</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="fa-solid fa-tag text-primary me-1"></i> Prix max / nuit</label>
+                    <select name="max_price" class="form-select">
+                        <option value="">Tous les prix</option>
+                        <option value="150" {{ selected_max_price == 150 ? 'selected' : '' }}>Jusqu'à 150 €</option>
+                        <option value="200" {{ selected_max_price == 200 ? 'selected' : '' }}>Jusqu'à 200 €</option>
+                        <option value="250" {{ selected_max_price == 250 ? 'selected' : '' }}>Jusqu'à 250 €</option>
+                        <option value="350" {{ selected_max_price == 350 ? 'selected' : '' }}>Jusqu'à 350 €</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="fa-regular fa-calendar-days text-primary me-1"></i> Arrivée</label>
+                    <input type="date" name="check_in" class="form-control" value="{{ selected_check_in }}">
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="fa-regular fa-calendar-check text-primary me-1"></i> Départ</label>
+                    <input type="date" name="check_out" class="form-control" value="{{ selected_check_out }}">
+                </div>
+                <div class="col-lg-1 col-md-6 d-grid">
+                    <button type="submit" class="btn btn-drei-primary" title="Filtrer">
+                        <i class="fa-solid fa-filter"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Rooms List -->
+        <div class="row g-4">
+            {% for room in rooms %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="drei-card h-100 d-flex flex-column">
+                        <div class="room-card-img-wrap">
+                            {% if room.type == 'standard' %}
+                                <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="room-card-img">
+                            {% elseif room.type == 'deluxe' %}
+                                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="room-card-img">
+                            {% elseif room.type == 'suite' %}
+                                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="room-card-img">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="room-card-img">
+                            {% endif %}
+                            <div class="room-capacity-badge">
+                                <i class="fa-solid fa-users me-1"></i> {{ room.capacity }} pers.
+                            </div>
+                            <div class="room-price-badge">
+                                {{ room.pricePerNight|number_format(0, ',', ' ') }} € <span class="fw-normal small">/ nuit</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary-subtle text-secondary small">{{ room.typeName }}</span>
+                                {% if room.surface %}
+                                    <span class="text-muted small"><i class="fa-solid fa-vector-square me-1"></i> {{ room.surface }} m²</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="h5 mb-2">{{ room.name }}</h3>
+                            <p class="text-muted small mb-3 flex-grow-1">
+                                {{ room.description|length > 120 ? room.description|slice(0, 120) ~ '...' : room.description }}
+                            </p>
+                            
+                            <div class="mb-3">
+                                {% for amenity in room.amenities|slice(0, 3) %}
+                                    <span class="amenity-tag"><i class="fa-solid fa-check text-success"></i> {{ amenity }}</span>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="d-flex gap-2 pt-3 border-top">
+                                <a href="{{ path('app_room_show', {'id': room.id}) }}" class="btn btn-drei-outline btn-sm flex-grow-1">
+                                    <i class="fa-solid fa-eye me-1"></i> Détails
+                                </a>
+                                <a href="{{ path('app_reservation_new', {'id': room.id, 'check_in': selected_check_in, 'check_out': selected_check_out, 'guests': selected_capacity}) }}" class="btn btn-drei-primary btn-sm px-3">
+                                    <i class="fa-solid fa-calendar-check me-1"></i> Réserver
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <div class="bg-white p-5 rounded-4 border shadow-sm mx-auto" style="max-width: 600px;">
+                        <i class="fa-regular fa-calendar-xmark text-warning display-4 mb-3"></i>
+                        <h4 class="brand-font">Aucune chambre ne correspond à vos critères</h4>
+                        <p class="text-muted">Essayez de modifier vos filtres ou vos dates pour afficher d'autres hébergements.</p>
+                        <a href="{{ path('app_rooms') }}" class="btn btn-drei-primary">Réinitialiser les filtres</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver {{ room.name }} — Drei Hotel{% endblock %}
+
+{% block body %}
+    <div class="py-4 border-bottom bg-white">
+        <div class="container">
+            <h1 class="h3 brand-font mb-1">Finaliser votre réservation</h1>
+            <p class="text-muted small mb-0">Étape 2/2 : Vérification des dates et validation</p>
+        </div>
+    </div>
+
+    <div class="container section-padding">
+        <div class="row g-5">
+            <!-- Left: Reservation Form -->
+            <div class="col-lg-7">
+                <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+                    <h3 class="h4 brand-font mb-4"><i class="fa-solid fa-calendar-check text-primary me-2"></i> Vos Détails de Séjour</h3>
+
+                    {{ form_start(form) }}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.checkIn) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.checkOut) }}
+                            </div>
+                            <div class="col-md-12">
+                                {{ form_row(form.guests) }}
+                                <small class="text-muted">Capacité maximale de cette chambre : {{ room.capacity }} personne(s).</small>
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(form.notes) }}
+                            </div>
+                        </div>
+
+                        <!-- On-site payment box -->
+                        <div class="payment-onsite-banner mb-4">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Mode de règlement : Paiement sur place à l'hôtel</h6>
+                                <p class="small text-muted mb-0">
+                                    Aucune transaction financière n'est effectuée sur ce site web. Vous effectuerez le règlement complet en espèces ou carte lors de votre arrivée au comptoir d'accueil.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-drei-primary btn-lg py-3">
+                                <i class="fa-solid fa-check-circle me-2"></i> Confirmer la réservation
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            <!-- Right: Selected Room Summary -->
+            <div class="col-lg-5">
+                <div class="bg-white p-4 rounded-4 border shadow-sm position-sticky" style="top: 100px;" id="room-price-per-night" data-price="{{ room.pricePerNight }}">
+                    <h4 class="h5 brand-font mb-3">Récapitulatif de l'hébergement</h4>
+                    
+                    <div class="rounded-3 overflow-hidden mb-3" style="height: 180px;">
+                        {% if room.type == 'standard' %}
+                            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                        {% elseif room.type == 'deluxe' %}
+                            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                        {% elseif room.type == 'suite' %}
+                            <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                        {% endif %}
+                    </div>
+
+                    <h5 class="fw-bold mb-1">{{ room.name }}</h5>
+                    <span class="badge bg-secondary-subtle text-secondary mb-3">{{ room.typeName }}</span>
+
+                    <ul class="list-unstyled small text-muted border-top border-bottom py-3 mb-3">
+                        <li class="d-flex justify-content-between mb-2">
+                            <span><i class="fa-solid fa-bed me-2 text-primary"></i> Literie :</span>
+                            <strong>{{ room.bedType ?: 'Lit double' }}</strong>
+                        </li>
+                        <li class="d-flex justify-content-between mb-2">
+                            <span><i class="fa-solid fa-users me-2 text-primary"></i> Capacité :</span>
+                            <strong>{{ room.capacity }} personnes</strong>
+                        </li>
+                        <li class="d-flex justify-content-between mb-2">
+                            <span><i class="fa-solid fa-tag me-2 text-primary"></i> Tarif unitaire :</span>
+                            <strong>{{ room.pricePerNight|number_format(2, ',', ' ') }} € / nuit</strong>
+                        </li>
+                    </ul>
+
+                    <!-- Calculation breakdown -->
+                    <div class="p-3 rounded-3 mb-3" style="background-color: var(--color-secondary-light);">
+                        <div class="d-flex justify-content-between small text-muted mb-2">
+                            <span>Nombre de nuitées :</span>
+                            <span class="fw-bold" id="calculated-nights-display">1 nuit</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Montant Total :</span>
+                            <span class="h4 brand-font text-primary mb-0" id="calculated-price-display">{{ room.pricePerNight|number_format(2, ',', ' ') }} €</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 small text-muted">
+                        <i class="fa-solid fa-circle-check text-success"></i>
+                        <span>Annulation gratuite jusqu'à 24h avant l'arrivée</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

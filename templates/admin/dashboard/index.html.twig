@@ -1,0 +1,152 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block page_title %}Tableau de bord de gestion{% endblock %}
+
+{% block body %}
+    <!-- Statistics Cards Grid -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">Chambres</span>
+                    <h3 class="brand-font mb-0 mt-1">{{ total_rooms }}</h3>
+                    <span class="small text-muted">Disponibles à l'hôtel</span>
+                </div>
+                <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="fa-solid fa-bed"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">Réservations</span>
+                    <h3 class="brand-font mb-0 mt-1">{{ total_reservations }}</h3>
+                    <span class="small text-muted">Total des réservations</span>
+                </div>
+                <div class="stat-icon bg-info-subtle text-info">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">En attente</span>
+                    <h3 class="brand-font mb-0 mt-1 text-warning">{{ pending_reservations }}</h3>
+                    <span class="small text-muted">À confirmer / traiter</span>
+                </div>
+                <div class="stat-icon bg-warning-subtle text-warning">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">Revenus Encaissés</span>
+                    <h3 class="brand-font mb-0 mt-1 text-success">{{ total_revenue|number_format(0, ',', ' ') }} €</h3>
+                    <span class="small text-muted">Paiements sur place reçus</span>
+                </div>
+                <div class="stat-icon bg-success-subtle text-success">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Banner -->
+    <div class="p-3 bg-white rounded-4 border shadow-sm mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-2 bg-secondary-subtle rounded-3 text-dark">
+                <i class="fa-solid fa-bolt fs-5"></i>
+            </div>
+            <div>
+                <strong class="d-block">Actions rapides d'administration</strong>
+                <span class="text-muted small">Gérez vos disponibilités et confirmez les arrivées</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_admin_room_new') }}" class="btn btn-drei-primary btn-sm">
+                <i class="fa-solid fa-plus me-1"></i> Nouvelle Chambre
+            </a>
+            <a href="{{ path('app_admin_reservations') }}" class="btn btn-drei-outline btn-sm">
+                <i class="fa-solid fa-list-check me-1"></i> Toutes les Réservations
+            </a>
+        </div>
+    </div>
+
+    <!-- Latest Reservations Table -->
+    <div class="bg-white rounded-4 border shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="brand-font mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Dernières Réservations</h5>
+            <a href="{{ path('app_admin_reservations') }}" class="small text-primary fw-bold text-decoration-none">
+                Voir tout le registre <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        {% if latest_reservations is empty %}
+            <p class="text-muted text-center py-4">Aucune réservation enregistrée pour le moment.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table align-middle table-hover mb-0">
+                    <thead class="table-light small text-uppercase">
+                        <tr>
+                            <th>Référence</th>
+                            <th>Client</th>
+                            <th>Chambre</th>
+                            <th>Arrivée / Départ</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Paiement</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in latest_reservations %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('app_admin_reservation_show', {'id': res.id}) }}" class="fw-bold text-primary">
+                                        #{{ res.reference }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">{{ res.user.fullName }}</div>
+                                    <small class="text-muted">{{ res.user.phone }}</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">{{ res.room.name }}</div>
+                                    <small class="text-muted">{{ res.guests }} pers.</small>
+                                </td>
+                                <td>
+                                    <div class="small">
+                                        {{ res.checkIn|date('d/m/Y') }} &rarr; {{ res.checkOut|date('d/m/Y') }}
+                                        <div class="text-muted">({{ res.numberOfNights }} nuit{{ res.numberOfNights > 1 ? 's' : '' }})</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong class="text-dark">{{ res.totalPrice|number_format(2, ',', ' ') }} €</strong>
+                                </td>
+                                <td>
+                                    <span class="badge {{ res.statusBadgeClass }} small">
+                                        {{ res.statusLabel }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ res.paymentBadgeClass }} small">
+                                        {{ res.paymentStatusLabel }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_admin_reservation_show', {'id': res.id}) }}" class="btn btn-outline-dark btn-sm" title="Consulter">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

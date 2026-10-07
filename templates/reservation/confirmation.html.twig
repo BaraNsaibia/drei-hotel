@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation confirmée — Drei Hotel{% endblock %}
+
+{% block body %}
+    <div class="container section-padding">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Confirmation Box -->
+                <div class="bg-white p-4 p-md-5 rounded-4 border shadow-md text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle mb-3" style="width: 72px; height: 72px;">
+                        <i class="fa-solid fa-check fs-2"></i>
+                    </div>
+
+                    <h1 class="h2 brand-font mb-2">Réservation confirmée !</h1>
+                    <p class="text-muted lead mb-4">
+                        Merci pour votre réservation chez <strong>Drei Hotel</strong>. Votre demande a bien été enregistrée.
+                    </p>
+
+                    <div class="alert alert-warning border-warning-subtle text-start p-3 rounded-3 mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="fa-solid fa-hand-holding-dollar fs-5 text-warning"></i>
+                            <strong class="text-dark">Rappel important concernant le paiement :</strong>
+                        </div>
+                        <p class="small text-muted mb-0">
+                            Le paiement sera effectué directement à l'hôtel lors de votre arrivée. Aucun règlement en ligne n'est nécessaire.
+                        </p>
+                    </div>
+
+                    <!-- Receipt Details Card -->
+                    <div class="border rounded-4 p-4 text-start bg-light mb-4">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                            <div>
+                                <span class="text-muted small">Numéro de référence</span>
+                                <div class="h4 brand-font text-primary mb-0">#{{ reservation.reference }}</div>
+                            </div>
+                            <div>
+                                <span class="badge {{ reservation.statusBadgeClass }} fs-6 px-3 py-2">
+                                    {{ reservation.statusLabel }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Chambre</span>
+                                <strong class="fs-6">{{ reservation.room.name }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Personnes</span>
+                                <strong class="fs-6">{{ reservation.guests }} personne{{ reservation.guests > 1 ? 's' : '' }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Date d'arrivée</span>
+                                <strong class="fs-6"><i class="fa-regular fa-calendar text-primary me-1"></i> {{ reservation.checkIn|date('d/m/Y') }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Date de départ</span>
+                                <strong class="fs-6"><i class="fa-regular fa-calendar-check text-primary me-1"></i> {{ reservation.checkOut|date('d/m/Y') }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Durée du séjour</span>
+                                <strong class="fs-6">{{ reservation.numberOfNights }} nuit{{ reservation.numberOfNights > 1 ? 's' : '' }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted small d-block">Mode de règlement</span>
+                                <strong class="fs-6 text-primary"><i class="fa-solid fa-hotel me-1"></i> Sur place à l'hôtel</strong>
+                            </div>
+                        </div>
+
+                        <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                            <span class="fs-5 fw-bold">Total du séjour :</span>
+                            <span class="h3 brand-font text-primary mb-0">{{ reservation.totalPrice|number_format(2, ',', ' ') }} €</span>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ path('app_account') }}" class="btn btn-drei-primary px-4 py-2">
+                            <i class="fa-solid fa-calendar-days me-2"></i> Voir mes réservations
+                        </a>
+                        <a href="{{ path('app_home') }}" class="btn btn-drei-outline px-4 py-2">
+                            <i class="fa-solid fa-house me-2"></i> Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

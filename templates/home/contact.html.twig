@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact & Accès — Drei Hotel{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <div class="py-5" style="background: linear-gradient(rgba(38, 50, 56, 0.6), rgba(49, 90, 114, 0.7)), url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat; color: white;">
+        <div class="container text-center py-4">
+            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2">À VOTRE ÉCOUTE</span>
+            <h1 class="text-white brand-font display-5 mb-2">Contact & Accès</h1>
+            <p class="text-light lead mx-auto" style="max-width: 600px;">Une question sur votre séjour ou une demande particulière ? Contactez-nous.</p>
+        </div>
+    </div>
+
+    <!-- Contact Grid -->
+    <div class="container section-padding">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <span class="section-subtitle">Coordonnées</span>
+                <h2 class="section-title mb-4">Nous rendre visite ou nous contacter</h2>
+                
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-white border rounded-circle p-3 shadow-sm text-primary">
+                        <i class="fa-solid fa-location-dot fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Adresse de l'hôtel</h6>
+                        <p class="text-muted mb-0">Boulevard du Jeu de Paume, 34000 Montpellier, France</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-white border rounded-circle p-3 shadow-sm text-primary">
+                        <i class="fa-solid fa-phone fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Téléphone & Réception</h6>
+                        <p class="text-muted mb-0">+33 123456789</p>
+                        <small class="text-success"><i class="fa-solid fa-circle-check"></i> Disponible 24h/24 & 7j/7</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-white border rounded-circle p-3 shadow-sm text-primary">
+                        <i class="fa-solid fa-envelope fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Email général</h6>
+                        <p class="text-muted mb-0">Obieda.dreae@hotmail.com</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-4 bg-white border shadow-sm">
+                    <h6 class="fw-bold mb-2"><i class="fa-solid fa-hand-holding-dollar text-warning me-2"></i> Modalité de Règlement</h6>
+                    <p class="small text-muted mb-0">
+                        Nous rappelons à notre aimable clientèle que les réservations effectuées sur notre site officiel font l'objet d'un <strong>paiement sur place</strong> lors de votre arrivée à la réception.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+                    <h3 class="h4 brand-font mb-4">Envoyez-nous un message</h3>
+                    <form method="POST" action="{{ path('app_contact') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nom complet *</label>
+                                <input type="text" name="name" required class="form-control" placeholder="Votre nom">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Adresse Email *</label>
+                                <input type="email" name="email" required class="form-control" placeholder="exemple@email.com">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Numéro de téléphone</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+216 ...">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Sujet de votre demande *</label>
+                                <input type="text" name="subject" required class="form-control" placeholder="Ex: Renseignement réservation ou demande spécifique">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Message *</label>
+                                <textarea name="message" required rows="5" class="form-control" placeholder="Détaillez votre message ici..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-drei-primary w-100 py-3">
+                                    <i class="fa-regular fa-paper-plane me-2"></i> Envoyer mon message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

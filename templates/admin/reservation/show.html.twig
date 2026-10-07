@@ -1,0 +1,149 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block page_title %}Réservation #{{ reservation.reference }}{% endblock %}
+
+{% block body %}
+    <div class="row g-4">
+        <!-- Main Details Column -->
+        <div class="col-lg-8">
+            <div class="bg-white rounded-4 border shadow-sm p-4 p-md-5 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <span class="text-muted small">Détail de la réservation</span>
+                        <h4 class="brand-font mb-0">Référence #{{ reservation.reference }}</h4>
+                        <span class="text-muted small">Créée le {{ reservation.createdAt|date('d/m/Y à H:i') }}</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge {{ reservation.statusBadgeClass }} fs-6 px-3 py-2">{{ reservation.statusLabel }}</span>
+                        <span class="badge {{ reservation.paymentBadgeClass }} fs-6 px-3 py-2">{{ reservation.paymentStatusLabel }}</span>
+                    </div>
+                </div>
+
+                <!-- Stay Details Grid -->
+                <div class="row g-4 mb-4">
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3 bg-light border">
+                            <span class="text-muted small d-block mb-1"><i class="fa-solid fa-bed text-primary me-1"></i> Chambre réservée</span>
+                            <h6 class="fw-bold mb-1">{{ reservation.room.name }}</h6>
+                            <span class="badge bg-secondary-subtle text-secondary small">{{ reservation.room.typeName }}</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3 bg-light border">
+                            <span class="text-muted small d-block mb-1"><i class="fa-solid fa-user-group text-primary me-1"></i> Voyageurs</span>
+                            <h6 class="fw-bold mb-1">{{ reservation.guests }} personne{{ reservation.guests > 1 ? 's' : '' }}</h6>
+                            <small class="text-muted">Capacité max : {{ reservation.room.capacity }} pers.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3 bg-light border">
+                            <span class="text-muted small d-block mb-1"><i class="fa-regular fa-calendar-days text-primary me-1"></i> Date d'arrivée</span>
+                            <h6 class="fw-bold text-dark mb-0">{{ reservation.checkIn|date('d/m/Y') }}</h6>
+                            <small class="text-muted">À partir de 14h00</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3 bg-light border">
+                            <span class="text-muted small d-block mb-1"><i class="fa-regular fa-calendar-check text-primary me-1"></i> Date de départ</span>
+                            <h6 class="fw-bold text-dark mb-0">{{ reservation.checkOut|date('d/m/Y') }}</h6>
+                            <small class="text-muted">Jusqu'à 12h00 ({{ reservation.numberOfNights }} nuit{{ reservation.numberOfNights > 1 ? 's' : '' }})</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes / Special Requests -->
+                <div class="p-3 rounded-3 bg-light border mb-4">
+                    <span class="text-muted small d-block mb-1 fw-bold"><i class="fa-solid fa-comment-dots text-primary me-1"></i> Demandes particulières du client :</span>
+                    <p class="mb-0 text-muted fst-italic">
+                        {{ reservation.notes ?: 'Aucune demande particulière spécifiée.' }}
+                    </p>
+                </div>
+
+                <!-- Financial Calculation -->
+                <div class="p-4 rounded-3 border" style="background-color: var(--color-secondary-light);">
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <span>Prix par nuit :</span>
+                        <span>{{ reservation.room.pricePerNight|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <span>Nombre de nuitées :</span>
+                        <span>&times; {{ reservation.numberOfNights }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="fs-5 fw-bold">Montant Total :</span>
+                        <span class="h3 brand-font text-primary mb-0">{{ reservation.totalPrice|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Client info & Admin Actions -->
+        <div class="col-lg-4">
+            <!-- Client Info Card -->
+            <div class="bg-white rounded-4 border shadow-sm p-4 mb-4">
+                <h5 class="brand-font mb-3"><i class="fa-solid fa-user text-primary me-2"></i> Informations Client</h5>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px;">
+                        {{ reservation.user.firstName|first|upper }}{{ reservation.user.lastName|first|upper }}
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ reservation.user.fullName }}</div>
+                        <small class="text-muted">Client enregistré</small>
+                    </div>
+                </div>
+                <ul class="list-unstyled small text-muted mb-0">
+                    <li class="mb-2"><i class="fa-solid fa-envelope me-2 text-primary"></i> {{ reservation.user.email }}</li>
+                    <li class="mb-2"><i class="fa-solid fa-phone me-2 text-primary"></i> {{ reservation.user.phone }}</li>
+                </ul>
+            </div>
+
+            <!-- Admin Actions Card -->
+            <div class="bg-white rounded-4 border shadow-sm p-4">
+                <h5 class="brand-font mb-3"><i class="fa-solid fa-gear text-primary me-2"></i> Actions d'Administration</h5>
+
+                <!-- 1. Change Payment Status (Paiement sur place -> Payé) -->
+                <div class="mb-4 pb-3 border-bottom">
+                    <label class="form-label small fw-bold text-muted">Gestion du Règlement (Sur place)</label>
+                    <form method="POST" action="{{ path('app_admin_reservation_update_payment', {'id': reservation.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('payment_' ~ reservation.id) }}">
+                        <div class="input-group mb-2">
+                            <select name="payment_status" class="form-select form-select-sm">
+                                <option value="on_site" {{ reservation.paymentStatus == 'on_site' ? 'selected' : '' }}>Paiement sur place</option>
+                                <option value="paid" {{ reservation.paymentStatus == 'paid' ? 'selected' : '' }}>Payé (Encaissé)</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Mettre à jour</button>
+                        </div>
+                    </form>
+                    {% if reservation.paymentStatus == 'paid' %}
+                        <small class="text-success"><i class="fa-solid fa-circle-check"></i> Cette réservation a été encaissée à la réception.</small>
+                    {% else %}
+                        <small class="text-warning"><i class="fa-solid fa-clock"></i> En attente d'encaissement à l'arrivée du client.</small>
+                    {% endif %}
+                </div>
+
+                <!-- 2. Change Booking Status -->
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Statut de la Réservation</label>
+                    <form method="POST" action="{{ path('app_admin_reservation_update_status', {'id': reservation.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('status_' ~ reservation.id) }}">
+                        <div class="input-group mb-2">
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="pending" {{ reservation.status == 'pending' ? 'selected' : '' }}>En attente</option>
+                                <option value="confirmed" {{ reservation.status == 'confirmed' ? 'selected' : '' }}>Confirmée</option>
+                                <option value="completed" {{ reservation.status == 'completed' ? 'selected' : '' }}>Terminée</option>
+                                <option value="cancelled" {{ reservation.status == 'cancelled' ? 'selected' : '' }}>Annulée</option>
+                            </select>
+                            <button type="submit" class="btn btn-dark btn-sm">Modifier</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="d-grid mt-3">
+                    <a href="{{ path('app_admin_reservations') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Retour aux réservations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

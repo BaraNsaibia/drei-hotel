@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Compte — Drei Hotel{% endblock %}
+
+{% block body %}
+    <div class="py-4 border-bottom bg-white">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 brand-font mb-0">Bonjour, {{ user.firstName }}</h1>
+                <p class="text-muted small mb-0">Bienvenue sur votre espace client Drei Hotel</p>
+            </div>
+            <a href="{{ path('app_rooms') }}" class="btn btn-drei-primary btn-sm">
+                <i class="fa-solid fa-plus me-1"></i> Réserver une chambre
+            </a>
+        </div>
+    </div>
+
+    <div class="container section-padding">
+        <div class="row g-4">
+            <!-- Profile Sidebar -->
+            <div class="col-lg-4">
+                <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 56px; height: 56px;">
+                            {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ user.fullName }}</h5>
+                            <span class="text-muted small">Membre depuis {{ user.createdAt|date('m/Y') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-3">
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Adresse Email</label>
+                            <span class="fw-semibold">{{ user.email }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Numéro de Téléphone</label>
+                            <span class="fw-semibold">{{ user.phone }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-muted small d-block">Paiement habituel</label>
+                            <span class="badge bg-secondary-subtle text-secondary">Règlement sur place à l'hôtel</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-4 border bg-white shadow-sm">
+                    <h6 class="fw-bold mb-2"><i class="fa-solid fa-circle-info text-primary me-2"></i> Besoin d'aide ?</h6>
+                    <p class="text-muted small mb-3">
+                        Pour toute modification d'horaire ou demande spécifique relative à votre séjour, contactez directement la réception.
+                    </p>
+                    <a href="{{ path('app_contact') }}" class="btn btn-drei-outline btn-sm w-100">
+                        Contacter la réception
+                    </a>
+                </div>
+            </div>
+
+            <!-- Reservations Table -->
+            <div class="col-lg-8">
+                <div class="bg-white p-4 rounded-4 border shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                        <h4 class="h5 brand-font mb-0"><i class="fa-solid fa-calendar-days text-primary me-2"></i> Mes Réservations</h4>
+                        <span class="badge bg-light text-dark border">{{ reservations|length }} séjour(s)</span>
+                    </div>
+
+                    {% if reservations is empty %}
+                        <div class="text-center py-5">
+                            <i class="fa-regular fa-calendar-xmark text-muted display-4 mb-3"></i>
+                            <h5 class="fw-bold">Vous n'avez aucune réservation en cours</h5>
+                            <p class="text-muted small">Découvrez nos chambres élégantes et réservez votre prochain séjour en quelques clics.</p>
+                            <a href="{{ path('app_rooms') }}" class="btn btn-drei-primary mt-2">
+                                Découvrir nos chambres
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table align-middle table-hover mb-0">
+                                <thead class="table-light small text-uppercase">
+                                    <tr>
+                                        <th>Référence</th>
+                                        <th>Chambre</th>
+                                        <th>Dates</th>
+                                        <th>Montant</th>
+                                        <th>Statut</th>
+                                        <th>Paiement</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for res in reservations %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('app_reservation_confirmation', {'reference': res.reference}) }}" class="fw-bold text-primary">
+                                                    #{{ res.reference }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold">{{ res.room.name }}</div>
+                                                <small class="text-muted">{{ res.guests }} pers.</small>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div><strong>Du :</strong> {{ res.checkIn|date('d/m/Y') }}</div>
+                                                    <div><strong>Au :</strong> {{ res.checkOut|date('d/m/Y') }}</div>
+                                                    <span class="text-muted">({{ res.numberOfNights }} nuit{{ res.numberOfNights > 1 ? 's' : '' }})</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-dark">{{ res.totalPrice|number_format(2, ',', ' ') }} €</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge {{ res.statusBadgeClass }} small">
+                                                    {{ res.statusLabel }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge {{ res.paymentBadgeClass }} small">
+                                                    {{ res.paymentStatusLabel }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if res.status in ['pending', 'confirmed'] %}
+                                                    <form method="POST" action="{{ path('app_account_cancel_reservation', {'id': res.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel_res_' ~ res.id) }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Annuler la réservation">
+                                                            <i class="fa-solid fa-xmark"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="text-muted small">—</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

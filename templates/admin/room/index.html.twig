@@ -1,0 +1,95 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block page_title %}Gestion des Chambres{% endblock %}
+
+{% block body %}
+    <div class="bg-white rounded-4 border shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h5 class="brand-font mb-0">Inventaire des Hébergements</h5>
+                <span class="text-muted small">Consultez, modifiez ou ajoutez les chambres de l'hôtel</span>
+            </div>
+            <a href="{{ path('app_admin_room_new') }}" class="btn btn-drei-primary btn-sm">
+                <i class="fa-solid fa-plus me-1"></i> Ajouter une chambre
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle table-hover mb-0">
+                <thead class="table-light small text-uppercase">
+                    <tr>
+                        <th>ID</th>
+                        <th>Chambre</th>
+                        <th>Type</th>
+                        <th>Capacité</th>
+                        <th>Superficie</th>
+                        <th>Prix / Nuit</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms %}
+                        <tr>
+                            <td><span class="text-muted">#{{ room.id }}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-3 overflow-hidden bg-light" style="width: 54px; height: 54px; flex-shrink: 0;">
+                                        {% if room.type == 'standard' %}
+                                            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=100&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                                        {% elseif room.type == 'deluxe' %}
+                                            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=100&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                                        {% elseif room.type == 'suite' %}
+                                            <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=100&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                                        {% else %}
+                                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=100&q=80" alt="{{ room.name }}" class="w-100 h-100 object-fit-cover">
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ room.name }}</div>
+                                        <small class="text-muted">{{ room.bedType ?: 'Lit double' }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-secondary">{{ room.typeName }}</span></td>
+                            <td><i class="fa-solid fa-users text-muted me-1"></i> {{ room.capacity }} pers.</td>
+                            <td>{{ room.surface ? room.surface ~ ' m²' : '—' }}</td>
+                            <td><strong class="text-primary">{{ room.pricePerNight|number_format(2, ',', ' ') }} €</strong></td>
+                            <td>
+                                <form method="POST" action="{{ path('app_admin_room_toggle_status', {'id': room.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle_status_' ~ room.id) }}">
+                                    {% if room.isAvailable %}
+                                        <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-2 py-1" title="Cliquer pour rendre indisponible">
+                                            <i class="fa-solid fa-circle-check me-1"></i> Disponible
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" title="Cliquer pour rendre disponible">
+                                            <i class="fa-solid fa-circle-xmark me-1"></i> Indisponible
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('app_admin_room_edit', {'id': room.id}) }}" class="btn btn-outline-primary btn-sm" title="Modifier">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="POST" action="{{ path('app_admin_room_delete', {'id': room.id}) }}" onsubmit="return confirm('Confirmez-vous la suppression de cette chambre ?');" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_room_' ~ room.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Supprimer">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">Aucune chambre trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
